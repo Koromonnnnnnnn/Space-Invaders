@@ -31,16 +31,44 @@ class Alien:
     def __init__(self, xpos, ypos):
         self.xpos = xpos
         self.ypos = ypos
-        self.isDead = False
+        self.isAlive = True
+        self.direction = 1
 
     def draw(self):
         pygame.draw.rect(screen, (WHITE), (self.xpos,
                          self.ypos, alienWidth, alienHeight))
 
-    def move(self):
-        if timer % 100 == 0:
-            self.xpos += 50
+    def move(self, time):
+        if time % 800 == 0:
+            self.ypos += 10  # Adjust this value to change the vertical movement
+            self.direction *= -1
+            return 0
 
+        if time % 100 == 0:
+            self.xpos += 10  # Adjust this value to change the horizontal movement
+
+        return time
+
+
+class Bullet:
+    def __init__(self, xpos, ypos):
+        self.xpos = xpos
+        self.ypos = ypos
+        self.isAlive = False
+
+    def move(self, xpos, ypos):
+        if self.isAlive == True:
+            self.ypos -= 5
+        if self.ypos < 0:
+            self.isLAive = False
+            self.xpos = xpos
+            self.ypos = ypos
+
+    def draw(self):
+        pygame.draw.rect(screen, (WHITE), (self.xpos, self.ypos, 3, 20))
+
+
+bullet = Bullet(xpos+28, ypos)
 
 armada = []
 for row in range(alienRows):
@@ -68,7 +96,6 @@ while not gameOver:
 
     # Physics section
     vx = 0
-    vy = 0
 
     if moveLeft:
         vx = -3
@@ -77,7 +104,9 @@ while not gameOver:
         vx = 3
 
     xpos += vx
-    ypos += vy
+
+    for i in range(len(armada)):
+        timer = armada[i].move(timer)
 
     # Render Section
 
