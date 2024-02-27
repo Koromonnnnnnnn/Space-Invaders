@@ -14,6 +14,7 @@ GREEN = (200, 200, 100)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Invaders")
 clock = pygame.time.Clock()
+game_over = False
 
 # Game Variables
 xpos = 400
