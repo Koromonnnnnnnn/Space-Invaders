@@ -14,20 +14,27 @@ GREEN = (200, 200, 100)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Invaders")
 clock = pygame.time.Clock()
-game_over = False
+gameOver = False
 
 # Game Variables
-xpos = 400
-ypos = 750
+xpos = 800
+ypos = 800
 moveLeft = False
+moveRight = False
 
-while not game_over:
+while not gameOver:
 
     clock.tick(60)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            game_over = True
+            gameOver = True
+            
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_RIGHT]:
+        moveRight = True
+    if keys[pygame.K_LEFT]:
+        moveLeft = True
             
     # Physics section
     
@@ -36,7 +43,13 @@ while not game_over:
     else:
         vx = 0
         
+    if moveRight == True:
+        vy += 3
+    else:
+        vy = 0
+        
     xpos += vx
+    ypos += vy
     
     # Render Section
     
