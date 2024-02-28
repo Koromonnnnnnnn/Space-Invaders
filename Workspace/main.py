@@ -28,6 +28,7 @@ shoot = False
 
 bullets = []
 armada = []
+walls = []
 
 
 class Alien:
@@ -45,7 +46,7 @@ class Alien:
     def move(self):
         self.move_counter += 1
         if self.move_counter % 800 == 0:
-            self.ypos += 10  # Adjust this value to change the vertical movement
+            self.ypos += 10
             self.direction *= -1
             self.xpos += 10 * self.direction
         elif self.move_counter % 100 == 0:
@@ -77,9 +78,39 @@ class Bullet:
         pygame.draw.rect(screen, (WHITE), (self.xpos, self.ypos, 3, 20))
 
 
+class Wall:
+    def __init__(self, xpos, ypos):
+        self.xpos = xpos
+        self.ypos = ypos
+        self.numHits = 0
+
+    def draw(self):
+        if self.numHits == 0:
+            pygame.draw.rect(screen, (250, 250, 20),
+                             (self.xpos, self.ypos, 30, 30))
+        if self.numHits == 1:
+            pygame.draw.rect(screen, (150, 150, 10),
+                             (self.xpos, self.ypos, 30, 30))
+        if self.numHits == 2:
+            pygame.draw.rect(screen, (50, 50, 0),
+                             (self.xpos, self.ypos, 30, 30))
+
+    def check_collision(self, bullet):
+        if self.numHits < 3 and bullet.isAlive:
+            if self.xpos < bullet.xpos < self.xpos + alienWidth and self.ypos < bullet.ypos < self.ypos + alienHeight:
+                self.numHits += 1
+                bullet.isAlive = False
+
+
 for row in range(alienRows):
     for col in range(alienCols):
         armada.append(Alien(col * 60 + 50, row * 50 + 50))
+
+for k in range(4):
+    for i in range(2):
+        for j in range(3):
+            # Push wall objects into list
+            walls.append(Wall(j*30+200*k+50, i*30+600))
 
 while not gameOver:
     clock.tick(60)
@@ -134,6 +165,9 @@ while not gameOver:
     for bullet in bullets:
         if bullet.isAlive:
             bullet.draw()
+
+    for wall in walls:
+        wall.draw()
 
     pygame.draw.rect(screen, (GREEN), (xpos, ypos, 60, 20))
     pygame.draw.rect(screen, (GREEN), (xpos + 20, ypos - 10, 20, 10))
