@@ -7,7 +7,7 @@ pygame.init()
 width, height = 800, 800
 alienWidth, alienHeight = 40, 40
 alienRows = 4
-AlienCols = 12
+alienCols = 12
 
 # Colors
 WHITE = (255, 255, 255)
@@ -22,9 +22,12 @@ gameOver = False
 # Game Variables
 xpos = 365
 ypos = 750
-timer = 0
 moveLeft = False
 moveRight = False
+shoot = False
+
+bullets = []
+armada = []
 
 
 class Alien:
@@ -33,50 +36,52 @@ class Alien:
         self.ypos = ypos
         self.isAlive = True
         self.direction = 1
+        self.move_counter = 0
 
     def draw(self):
         pygame.draw.rect(screen, (WHITE), (self.xpos,
                          self.ypos, alienWidth, alienHeight))
 
-    def move(self, time):
-        if time % 800 == 0:
+    def move(self):
+        self.move_counter += 1
+        if self.move_counter % 800 == 0:
             self.ypos += 10  # Adjust this value to change the vertical movement
             self.direction *= -1
-            return 0
+            self.xpos += 10 * self.direction
+        elif self.move_counter % 100 == 0:
+            self.xpos += 10 * self.direction
 
-        if time % 100 == 0:
-            self.xpos += 10  # Adjust this value to change the horizontal movement
+        if self.xpos < 0 or self.xpos > width - alienWidth:
+            self.direction *= -1
 
-        return time
+    def check_collision(self, bullet):
+        if self.isAlive and bullet.isAlive:
+            if self.xpos < bullet.xpos < self.xpos + alienWidth and self.ypos < bullet.ypos < self.ypos + alienHeight:
+                self.isAlive = False
+                bullet.isAlive = False
 
 
 class Bullet:
     def __init__(self, xpos, ypos):
         self.xpos = xpos
         self.ypos = ypos
-        self.isAlive = False
+        self.isAlive = True
 
-    def move(self, xpos, ypos):
-        if self.isAlive == True:
+    def move(self):
+        if self.isAlive:
             self.ypos -= 5
-        if self.ypos < 0:
-            self.isLAive = False
-            self.xpos = xpos
-            self.ypos = ypos
+            if self.ypos < 0:
+                self.isAlive = False
 
     def draw(self):
         pygame.draw.rect(screen, (WHITE), (self.xpos, self.ypos, 3, 20))
 
 
-bullet = Bullet(xpos+28, ypos)
-
-armada = []
 for row in range(alienRows):
-    for col in range(AlienCols):
-        armada.append(Alien(col*60+50, row*50+50))
+    for col in range(alienCols):
+        armada.append(Alien(col * 60 + 50, row * 50 + 50))
 
 while not gameOver:
-
     clock.tick(60)
 
     for event in pygame.event.get():
@@ -94,30 +99,44 @@ while not gameOver:
     else:
         moveLeft = False
 
-    # Physics section
-    vx = 0
+    if keys[pygame.K_SPACE]:
+        shoot = True
+    else:
+        shoot = False
 
-    if moveLeft:
-        vx = -3
+    # Player movement
+    if moveLeft and xpos > 0:
+        xpos -= 5
+    if moveRight and xpos < width - 60:
+        xpos += 5
 
-    if moveRight:
-        vx = 3
+    # Bullet shooting
+    if shoot:
+        bullets.append(Bullet(xpos + 28, ypos))
 
-    xpos += vx
+    # Update bullet positions
+    for bullet in bullets:
+        bullet.move()
 
-    for i in range(len(armada)):
-        timer = armada[i].move(timer)
+    # Update alien positions
+    for alien in armada:
+        alien.move()
+        for bullet in bullets:
+            alien.check_collision(bullet)
 
     # Render Section
+    screen.fill((BLACK))
 
-    screen.fill((BLACK))  # wipe screen
+    for alien in armada:
+        if alien.isAlive:
+            alien.draw()
 
-    for i in range(len(armada)):
-        armada[i].draw()
+    for bullet in bullets:
+        if bullet.isAlive:
+            bullet.draw()
 
-    pygame.draw.rect(screen, (GREEN), (xpos, ypos, 60, 20))  # draw player
-    pygame.draw.rect(
-        screen, (GREEN), (xpos+20, ypos-10, 20, 10))  # draw player
+    pygame.draw.rect(screen, (GREEN), (xpos, ypos, 60, 20))
+    pygame.draw.rect(screen, (GREEN), (xpos + 20, ypos - 10, 20, 10))
 
     pygame.display.flip()
 
