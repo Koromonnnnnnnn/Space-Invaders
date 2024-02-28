@@ -1,13 +1,15 @@
 import pygame
-import random
+from pygame import mixer
 
 pygame.init()
+mixer.init()
 
 # Constants
 width, height = 800, 800
 alienWidth, alienHeight = 40, 40
 alienRows = 4
 alienCols = 12
+FPS = 60
 
 # Colors
 WHITE = (255, 255, 255)
@@ -25,6 +27,8 @@ ypos = 750
 moveLeft = False
 moveRight = False
 shoot = False
+
+shootSFX = pygame.mixer.Sound("shoot.wav")
 
 bullets = []
 armada = []
@@ -120,7 +124,7 @@ for k in range(4):
             walls.append(Wall(j*30+200*k+50, i*30+600))
 
 while not gameOver:
-    clock.tick(60)
+    clock.tick(FPS)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -139,6 +143,7 @@ while not gameOver:
 
     if keys[pygame.K_SPACE]:
         shoot = True
+        pygame.mixer.Sound.play(shootSFX)
     else:
         shoot = False
 
