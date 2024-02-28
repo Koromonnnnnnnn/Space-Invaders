@@ -102,6 +102,13 @@ class Wall:
                 bullet.isAlive = False
 
 
+class missileConstructor:
+    def __init__(self):
+        self.xpos = -10
+        self.ypos = -10
+        self.isAlive = False
+
+
 for row in range(alienRows):
     for col in range(alienCols):
         armada.append(Alien(col * 60 + 50, row * 50 + 50))
@@ -154,6 +161,11 @@ while not gameOver:
         alien.move()
         for bullet in bullets:
             alien.check_collision(bullet)
+
+    # Update wall
+    for wall in walls:
+        for bullet in bullets:
+            wall.check_collision(bullet)
 
     # Render Section
     screen.fill((BLACK))
