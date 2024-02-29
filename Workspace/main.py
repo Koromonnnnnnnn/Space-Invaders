@@ -19,7 +19,7 @@ BLACK = (0, 0, 0)
 GREEN = (102, 255, 0)
 
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Space Invaders")
+pygame.display.set_caption("Space Invaders - Rise of Eminem")
 clock = pygame.time.Clock()
 gameOver = False
 
