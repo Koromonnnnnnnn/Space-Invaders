@@ -181,7 +181,7 @@ while not gameOver:
     for alien in armada:
         alien.move()
         for bullet in bullets:
-            alien.check_collision(bullet)
+            alien.check_collision(bullet) # check if player bullets hit alien
 
     # Update wall
     for wall in walls:
