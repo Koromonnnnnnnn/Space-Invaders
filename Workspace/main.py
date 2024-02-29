@@ -143,6 +143,8 @@ while not gameOver:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             gameOver = True
+    if lives == 0:
+        gameOver = True
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_RIGHT]:
@@ -204,13 +206,23 @@ while not gameOver:
             missile.ypos = armada[pick].ypos
             missiles.append(missile)
 
-    for i in range(len(missiles)):
+    for i in range(len(missiles)):  # Check if missile hits plater
         if missiles[i].isAlive:
             if missiles[i].xpos > xpos:
                 if missiles[i].xpos < xpos + 40:
                     if missiles[i].ypos < ypos + 40:
                         if missiles[i].ypos > ypos:
-                            print("Player Hit")
+                            lives = - 1
+                            xpos = xpos
+                            ypos = ypos
+
+    for i in range(len(armada)):  # Check if alien hits player
+        if armada[i].isAlive:
+            if armada[i].xpos > xpos:
+                if armada[i].xpos < xpos + 40:
+                    if armada[i].ypos < ypos + 40:
+                        if armada[i].ypos > ypos:
+                            gameOver = True
 
     # Render Section
     screen.fill((BLACK))
@@ -233,6 +245,12 @@ while not gameOver:
     pygame.draw.rect(screen, (GREEN), (xpos, ypos, 60, 20))
     pygame.draw.rect(screen, (GREEN), (xpos + 20, ypos - 10, 20, 10))
 
+    my_font = pygame.font.SysFont('Comic Sans MS', 30)
+    text_surface = my_font.render('LIVES:', False, (WHITE))
+
+    screen.blit(text_surface, (0, 0))
+
     pygame.display.flip()
 
+print("Game Over")
 pygame.quit()
