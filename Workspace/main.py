@@ -32,7 +32,7 @@ shoot = False
 
 shootSFX = pygame.mixer.Sound("shoot.wav")
 music = pygame.mixer.music.load('01.mp3')
-pygame.mixer.music.set_volume(0.25)
+pygame.mixer.music.set_volume(0.35)
 pygame.mixer.music.play(-1)
 
 bullets = []
@@ -50,10 +50,12 @@ class Alien:
         self.isAlive = True
         self.direction = 1
         self.move_counter = 0
+        self.alien = pygame.image.load('alien.png')
+        self.alien = pygame.transform.scale(self.alien, (40, 40))
 
     def draw(self):
-        pygame.draw.rect(screen, (WHITE), (self.xpos,
-                                           self.ypos, alienWidth, alienHeight))
+        screen.blit(self.alien, (self.xpos, self.ypos,
+                    alienWidth, alienHeight))
 
     def move(self):
         self.move_counter += 1
@@ -184,7 +186,7 @@ while not gameOver:
     for alien in armada:
         alien.move()
         for bullet in bullets:
-            alien.check_collision(bullet) # check if player bullets hit alien
+            alien.check_collision(bullet)  # check if player bullets hit alien
 
     # Update wall
     for wall in walls:
@@ -255,5 +257,14 @@ while not gameOver:
 
     pygame.display.flip()
 
-print("Game Over")
-pygame.quit()
+if gameOver == True:
+    screen.fill(BLACK)
+    font = pygame.font.Font(None, 36)
+    text = font.render("Game Over", True, WHITE)
+    text_rect = text.get_rect(center=(800 // 2, 800 // 2))
+    screen.blit(text, text_rect)
+    pygame.display.flip()
+
+    pygame.time.delay(2000)
+
+    pygame.quit()
