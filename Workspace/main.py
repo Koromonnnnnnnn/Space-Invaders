@@ -55,7 +55,7 @@ class Alien:
     def move(self):
         self.move_counter += 1
         if self.move_counter % 800 == 0:
-            self.ypos += 10
+            self.ypos += 40
             self.direction *= -1
             self.xpos += 10 * self.direction
         elif self.move_counter % 100 == 0:
