@@ -1,4 +1,5 @@
 import pygame
+import random
 from pygame import mixer
 
 pygame.init()
@@ -33,6 +34,7 @@ shootSFX = pygame.mixer.Sound("shoot.wav")
 bullets = []
 armada = []
 walls = []
+missiles = []
 
 
 class Alien:
@@ -112,6 +114,15 @@ class missileConstructor:
         self.ypos = -10
         self.isAlive = False
 
+    def move(self):
+        if self.isAlive:
+            self.ypos += 5
+            if self.ypos < 800:
+                self.isAlive = False
+
+    def draw(self):
+        pygame.draw.rect(screen, (WHITE), (self.xpos, self.ypos, 3, 20))
+
 
 for row in range(alienRows):
     for col in range(alienCols):
@@ -172,6 +183,21 @@ while not gameOver:
         for bullet in bullets:
             wall.check_collision(bullet)
 
+    # Update missile
+    for missile in missiles:
+        missile.move()
+
+    chance = random.randrange(100)
+    if chance < 2:
+        pick = random.randrange(len(armada))
+        if armada[pick].isAlive == True:
+            for i in range(len(missiles)):
+                if missiles[i].isAlive == False:
+                    missiles[i].isAlive = True
+                    missiles[i].xpos = armada[pick].xpos + 5
+                    missiles[i].ypos = armada[pick].ypos
+                    break
+
     # Render Section
     screen.fill((BLACK))
 
@@ -182,6 +208,10 @@ while not gameOver:
     for bullet in bullets:
         if bullet.isAlive:
             bullet.draw()
+
+    for missile in missiles:
+        if missile.isAlive:
+            missile.draw()
 
     for wall in walls:
         wall.draw()
