@@ -31,6 +31,9 @@ moveRight = False
 shoot = False
 
 shootSFX = pygame.mixer.Sound("shoot.wav")
+music = pygame.mixer.music.load('01.mp3')
+pygame.mixer.music.set_volume(0.25)
+pygame.mixer.music.play(-1)
 
 bullets = []
 armada = []
