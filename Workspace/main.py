@@ -37,7 +37,7 @@ armada = []
 walls = []
 missiles = []
 missile_speed = 5
-missile_frequency = 2 
+missile_frequency = 2
 
 
 class Alien:
@@ -184,11 +184,11 @@ while not gameOver:
     # Update wall
     for wall in walls:
         for bullet in bullets:
-            wall.check_collision(bullet) #check if player bullets hit wall
-            
+            wall.check_collision(bullet)  # check if player bullets hit wall
+
     for wall in walls:
         for missile in missiles:
-            wall.check_collision(missile) #check if alien bullets hit wall
+            wall.check_collision(missile)  # check if alien bullets hit wall
 
     # Update missile
     for missile in missiles:
@@ -203,7 +203,7 @@ while not gameOver:
             missile.xpos = armada[pick].xpos + 5
             missile.ypos = armada[pick].ypos
             missiles.append(missile)
-    
+
     for i in range(len(missiles)):
         if missiles[i].isAlive:
             if missiles[i].xpos > xpos:
@@ -211,7 +211,6 @@ while not gameOver:
                     if missiles[i].ypos < ypos + 40:
                         if missiles[i].ypos > ypos:
                             print("Player Hit")
-    
 
     # Render Section
     screen.fill((BLACK))
