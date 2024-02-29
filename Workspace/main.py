@@ -212,9 +212,8 @@ while not gameOver:
                 if missiles[i].xpos < xpos + 40:
                     if missiles[i].ypos < ypos + 40:
                         if missiles[i].ypos > ypos:
-                            lives = - 1
-                            xpos = xpos
-                            ypos = ypos
+                            lives -= 1
+                            # print(lives)
 
     for i in range(len(armada)):  # Check if alien hits player
         if armada[i].isAlive:
