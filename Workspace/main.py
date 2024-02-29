@@ -11,6 +11,7 @@ alienWidth, alienHeight = 40, 40
 alienRows = 4
 alienCols = 12
 FPS = 60
+lives = 3
 
 # Colors
 WHITE = (255, 255, 255)
@@ -35,6 +36,8 @@ bullets = []
 armada = []
 walls = []
 missiles = []
+missile_speed = 5
+missile_frequency = 2 
 
 
 class Alien:
@@ -47,7 +50,7 @@ class Alien:
 
     def draw(self):
         pygame.draw.rect(screen, (WHITE), (self.xpos,
-                         self.ypos, alienWidth, alienHeight))
+                                           self.ypos, alienWidth, alienHeight))
 
     def move(self):
         self.move_counter += 1
@@ -116,8 +119,8 @@ class missileConstructor:
 
     def move(self):
         if self.isAlive:
-            self.ypos += 5
-            if self.ypos < 800:
+            self.ypos += missile_speed
+            if self.ypos > height:
                 self.isAlive = False
 
     def draw(self):
@@ -181,22 +184,34 @@ while not gameOver:
     # Update wall
     for wall in walls:
         for bullet in bullets:
-            wall.check_collision(bullet)
+            wall.check_collision(bullet) #check if player bullets hit wall
+            
+    for wall in walls:
+        for missile in missiles:
+            wall.check_collision(missile) #check if alien bullets hit wall
 
     # Update missile
     for missile in missiles:
         missile.move()
 
     chance = random.randrange(100)
-    if chance < 2:
+    if chance < missile_frequency:
         pick = random.randrange(len(armada))
         if armada[pick].isAlive == True:
-            for i in range(len(missiles)):
-                if missiles[i].isAlive == False:
-                    missiles[i].isAlive = True
-                    missiles[i].xpos = armada[pick].xpos + 5
-                    missiles[i].ypos = armada[pick].ypos
-                    break
+            missile = missileConstructor()
+            missile.isAlive = True
+            missile.xpos = armada[pick].xpos + 5
+            missile.ypos = armada[pick].ypos
+            missiles.append(missile)
+    
+    for i in range(len(missiles)):
+        if missiles[i].isAlive:
+            if missiles[i].xpos > xpos:
+                if missiles[i].xpos < xpos + 40:
+                    if missiles[i].ypos < ypos + 40:
+                        if missiles[i].ypos > ypos:
+                            print("Player Hit")
+    
 
     # Render Section
     screen.fill((BLACK))
