@@ -213,7 +213,8 @@ while not gameOver:
                     if missiles[i].ypos < ypos + 40:
                         if missiles[i].ypos > ypos:
                             lives -= 1
-                            # print(lives)
+                            xpos = 365
+                            ypos = 750
 
     for i in range(len(armada)):  # Check if alien hits player
         if armada[i].isAlive:
@@ -245,7 +246,7 @@ while not gameOver:
     pygame.draw.rect(screen, (GREEN), (xpos + 20, ypos - 10, 20, 10))
 
     my_font = pygame.font.SysFont('Comic Sans MS', 30)
-    text_surface = my_font.render('LIVES:', False, (WHITE))
+    text_surface = my_font.render('LIVES: ' + str(lives), False, WHITE)
 
     screen.blit(text_surface, (0, 0))
 
