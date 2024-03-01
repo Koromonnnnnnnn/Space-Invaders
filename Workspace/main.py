@@ -12,6 +12,9 @@ alienRows = 4
 alienCols = 12
 FPS = 60
 lives = 3
+shootCooldown = 20
+cooldownTimer = 0
+numAliensAlive = alienCols * alienRows
 
 # Colors
 WHITE = (255, 255, 255)
@@ -74,7 +77,6 @@ class Alien:
             if self.xpos < bullet.xpos < self.xpos + alienWidth and self.ypos < bullet.ypos < self.ypos + alienHeight:
                 self.isAlive = False
                 bullet.isAlive = False
-
 
 class Bullet:
     def __init__(self, xpos, ypos):
@@ -148,7 +150,7 @@ while not gameOver:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             gameOver = True
-    if lives == 0:
+    if lives == 0 or numAliensAlive == 0:
         gameOver = True
 
     keys = pygame.key.get_pressed()
@@ -162,11 +164,15 @@ while not gameOver:
     else:
         moveLeft = False
 
-    if keys[pygame.K_SPACE]:
+    if keys[pygame.K_SPACE] and cooldownTimer <= 0:
         shoot = True
+        cooldownTimer = shootCooldown
         pygame.mixer.Sound.play(shootSFX)
     else:
         shoot = False
+        
+    if cooldownTimer > 0:
+        cooldownTimer -= 1
 
     # Player movement
     if moveLeft and xpos > 0:
